@@ -16,8 +16,7 @@ namespace L_systems
         private bool penDown = false;
         private struct TurtleState // saving turtle state for push/pop
         {
-            public float X;
-            public float Y;
+            public float X, Y;
             public float Angle;
             public bool PenDown;
             public Color PenColor;

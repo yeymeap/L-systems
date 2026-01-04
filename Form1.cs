@@ -15,6 +15,7 @@ namespace L_systems
         private CheckBox chkPenDown;
         private NumericUpDown numStep, numAngle, numPenWidth;
         private Button btnCanvasColor, btnPenColor;
+        private Label lblCurrentStep;
 
         // Settings
         private Color canvasColor = Color.Orange;
@@ -51,17 +52,16 @@ namespace L_systems
             };
 
             // Action buttons
-            btnStart = new Button { Text = "Start", AutoSize = true };
-            btnClear = new Button { Text = "Clear", AutoSize = true };
-            btnStepForward = new Button { Text = "Step +", AutoSize = true };
-            btnStepBackward = new Button { Text = "Step -", AutoSize = true };
+            btnStart = new Button { Text = "Start", AutoSize = true, Margin = new Padding(3) };
+            btnClear = new Button { Text = "Clear", AutoSize = true, Margin = new Padding(3) };
+            btnStepForward = new Button { Text = "Step +", AutoSize = true, Margin = new Padding(3) };
+            btnStepBackward = new Button { Text = "Step -", AutoSize = true, Margin = new Padding(3) };
 
             btnStart.Click += (_, _) => StartProgram();
             btnClear.Click += (_, _) => ClearCanvas();
             btnStepForward.Click += (_, _) => StepForward();
             btnStepBackward.Click += (_, _) => StepBackward();
 
-            // Settings controls
             chkPenDown = new CheckBox
             {
                 Text = "Pen Down",
@@ -152,7 +152,6 @@ namespace L_systems
                 }
             };
 
-            // Layout panels
             var buttonPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
@@ -163,6 +162,15 @@ namespace L_systems
             buttonPanel.Controls.Add(btnStepForward);
             buttonPanel.Controls.Add(btnStepBackward);
             buttonPanel.Controls.Add(btnClear);
+
+            lblCurrentStep = new Label
+            {
+                Text = "Step: 0/0",
+                AutoSize = true,
+                Padding = new Padding(10, 10, 5, 5),
+                Font = new Font(Font.FontFamily, 10, FontStyle.Bold)
+            };
+            buttonPanel.Controls.Add(lblCurrentStep);
 
             var settingsPanel = new FlowLayoutPanel
             {
@@ -210,6 +218,7 @@ namespace L_systems
         {
             program = txtProgram.Text;
             currentStep = 0;
+            UpdateStepLabel();
             ClearCanvas();
         }
 
@@ -230,13 +239,36 @@ namespace L_systems
 
         private void StepForward()
         {
-            if (currentStep >= program.Length) return;
+            if (string.IsNullOrEmpty(program))
+            {
+                return;
+            }
 
-            InterpretChar(program[currentStep]);
+            if (currentStep >= program.Length)
+            {
+                return;
+            }
+
+            char c = program[currentStep];
+            InterpretChar(c);
             currentStep++;
 
+            UpdateStepLabel();
             pictureBox.Image = canvas;
             pictureBox.Refresh();
+        }
+
+        private void UpdateStepLabel()
+        {
+            if (currentStep < program.Length)
+            {
+                char nextChar = program[currentStep];
+                lblCurrentStep.Text = $"Step: {currentStep}/{program.Length} (Next: '{nextChar}')";
+            }
+            else
+            {
+                lblCurrentStep.Text = $"Step: {currentStep}/{program.Length} (Done)";
+            }
         }
 
         private void StepBackward()
@@ -257,6 +289,7 @@ namespace L_systems
                 InterpretChar(program[i]);
             }
 
+            UpdateStepLabel();
             pictureBox.Image = canvas;
             pictureBox.Refresh();
         }

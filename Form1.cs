@@ -10,7 +10,6 @@ namespace L_systems
         private string program = string.Empty;
         private int currentStep = 0;
 
-        // UI Controls
         private PictureBox pictureBox;
         private TextBox txtAxiom, txtRules, txtVariables, txtConstants;
         private Button btnStart, btnClear, btnStepForward, btnStepBackward, btnGenerate, btnRunAll;
@@ -21,7 +20,6 @@ namespace L_systems
         private ComboBox cmbExamples;
         private Button btnSaveSettings, btnLoadSettings, btnSaveImage;
 
-        // Settings
         private Color canvasColor = Color.DarkGreen;
         private Color penColor = Color.Yellow;
         private float stepSize = 10f;
@@ -29,13 +27,11 @@ namespace L_systems
         private float penWidth = 1f;
         private bool penDown = true;
 
-        // L-system
         private Dictionary<char, string> rules = new Dictionary<char, string>();
         private HashSet<char> variables = new HashSet<char>();
         private HashSet<char> constants = new HashSet<char>();
         private string axiom = string.Empty;
 
-        // Panning
         private Point panOffset = new Point(0, 0);
         private Point lastMousePos;
         private bool isPanning = false;
@@ -66,7 +62,6 @@ namespace L_systems
             pictureBox.MouseUp += PictureBox_MouseUp;
             pictureBox.Paint += PictureBox_Paint;
 
-            // L-system definition panel (right side)
             var lSystemPanel = new Panel
             {
                 Dock = DockStyle.Right,
@@ -79,7 +74,6 @@ namespace L_systems
             int yPos = 5;
             int controlWidth = 255;
 
-            // Examples dropdown
             var lblExamples = new Label { Text = "Load Example:", Location = new Point(5, yPos), Width = controlWidth, AutoSize = false };
             lSystemPanel.Controls.Add(lblExamples);
             yPos += 20;
@@ -137,7 +131,6 @@ namespace L_systems
             lSystemPanel.Controls.Add(lblGenerated);
             yPos += 70;
 
-            // Save/Load buttons
             btnSaveSettings = new Button { Text = "Save Settings", Location = new Point(5, yPos), Width = 120, Height = 25 };
             btnSaveSettings.Click += (s, e) => SaveSettings();
             lSystemPanel.Controls.Add(btnSaveSettings);
@@ -151,7 +144,6 @@ namespace L_systems
             btnSaveImage.Click += (s, e) => SaveImage();
             lSystemPanel.Controls.Add(btnSaveImage);
 
-            // Action buttons
             btnStart = new Button { Text = "Start", AutoSize = true, Margin = new Padding(3) };
             btnClear = new Button { Text = "Clear", AutoSize = true, Margin = new Padding(3) };
             btnStepForward = new Button { Text = "Step +", AutoSize = true, Margin = new Padding(3) };
@@ -164,7 +156,6 @@ namespace L_systems
             btnStepBackward.Click += (s, e) => StepBackward();
             btnRunAll.Click += (s, e) => RunAll();
 
-            // Settings controls
             chkPenDown = new CheckBox
             {
                 Text = "Pen Down",
@@ -265,7 +256,6 @@ namespace L_systems
                 pictureBox.Invalidate();
             };
 
-            // Layout panels
             var buttonPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
@@ -475,6 +465,9 @@ namespace L_systems
             if (penDown) turtle.PenDown();
             else turtle.PenUp();
 
+            panOffset.X = (pictureBox.Width - canvasSize) / 2;
+            panOffset.Y = (pictureBox.Height - canvasSize) / 2;
+
             pictureBox.Invalidate();
         }
 
@@ -545,6 +538,8 @@ namespace L_systems
             if (penDown) turtle.PenDown();
             else turtle.PenUp();
 
+            panOffset.X = (pictureBox.Width - canvasSize) / 2;
+            panOffset.Y = (pictureBox.Height - canvasSize) / 2;
             pictureBox.Invalidate();
         }
 
@@ -670,7 +665,6 @@ namespace L_systems
                 }
             }
         }
-
         private void LoadSettingsFromFile()
         {
             using (var openDialog = new OpenFileDialog())
@@ -711,7 +705,6 @@ namespace L_systems
                 }
             }
         }
-
         private void SaveImage()
         {
             if (canvas == null)
